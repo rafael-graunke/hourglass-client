@@ -34,19 +34,29 @@
       "entity": 2,
       "email": "testeemoutroagora@teste.com",
       "id": 7
+    },
+    {
+      "entity": 2,
+      "email": "maisum@teste.com",
+      "id": 8
+    },
+    {
+      "entity": 1,
+      "email": "teaste@emaioll.con",
+      "id": 9
     }
   ],
   "hours": [
     {
       "id": 1,
       "entity": 1,
-      "hoursContracted": 35,
+      "hoursContracted": "40",
       "hoursUsed": 15
     },
     {
       "id": 2,
       "entity": 2,
-      "hoursContracted": 65,
+      "hoursContracted": "70",
       "hoursUsed": 60
     }
   ]

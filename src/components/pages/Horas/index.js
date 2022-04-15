@@ -8,11 +8,11 @@ import styles from './styles.module.css';
 
 function Horas({ entity }) {
   const [contractedHours, setContractedHours] = useState('');
-  const [hoursInfo, setHoursInfo] = useState([]);
+  const [hoursInfo, setHoursInfo] = useState({});
 
   function getHoursInfo(id) {
     axios.get(`http://localhost:5000/hours?entity=${id}`).then((response) => {
-      setHoursInfo(response.data);
+      setHoursInfo(response.data[0]);
     });
   }
 
@@ -22,6 +22,12 @@ function Horas({ entity }) {
 
   function handleOnSubmit(e) {
     e.preventDefault();
+    axios
+      .put(`http://localhost:5000/hours/${hoursInfo.id}`, {
+        ...hoursInfo,
+        hoursContracted: contractedHours,
+      })
+      .then(() => getHoursInfo(entity));
   }
 
   return (
@@ -31,22 +37,24 @@ function Horas({ entity }) {
           <h1>Contratadas</h1>
           <h1>Consumidas</h1>
           <h1>Percentual</h1>
-          {hoursInfo.map((info, index) => (
+          {hoursInfo && (
             <>
               <div className={styles.item}>
-                <h1>{info.hoursContracted}</h1>h
+                <h1>{hoursInfo.hoursContracted}</h1>h
               </div>
               <div className={styles.item}>
-                <h1>{info.hoursUsed}</h1>h
+                <h1>{hoursInfo.hoursUsed}</h1>h
               </div>
               <div className={styles.item}>
                 <h1>
-                  {Math.floor((info.hoursUsed / info.hoursContracted) * 100)}
+                  {Math.floor(
+                    (hoursInfo.hoursUsed / hoursInfo.hoursContracted) * 100
+                  )}
                 </h1>
                 %
               </div>
             </>
-          ))}
+          )}
         </div>
       </section>
       <section className={styles.container}>
