@@ -1,13 +1,12 @@
+import MenuItem from './MenuItem';
 import styles from './Sidebar.module.css';
 
 function Sidebar() {
   return (
     <div className={styles.panel}>
-      <ul>
-        <li>Teste 1</li>
-        <li>Teste 2</li>
-        <li>Teste 3</li>
-      </ul>
+      <MenuItem to="/relatorios" texto="Relatórios" />
+      <MenuItem to="/horas" texto="Horas" />
+      <MenuItem to="/emails" texto="E-mails" />
     </div>
   );
 }

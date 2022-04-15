@@ -6,21 +6,25 @@ import ContentWrapper from './components/layout/ContentWrapper';
 import Container from './components/layout/Container';
 
 import Relatorios from './components/pages/Relatorios';
+import Horas from './components/pages/Horas';
+import Emails from './components/pages/Emails';
 
 function App() {
   return (
     <div className="App">
-      <Navbar />
-      <ContentWrapper>
-        <Sidebar />
-        <Router>
+      <Router>
+        <Navbar />
+        <ContentWrapper>
+          <Sidebar />
           <Container>
             <Routes>
-              <Route path="/" element={<Relatorios />} />
+              <Route path="/relatorios" element={<Relatorios />} />
+              <Route path="/horas" element={<Horas />} />
+              <Route path="/emails" element={<Emails />} />
             </Routes>
           </Container>
-        </Router>
-      </ContentWrapper>
+        </ContentWrapper>
+      </Router>
     </div>
   );
 }

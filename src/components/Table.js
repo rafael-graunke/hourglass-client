@@ -6,11 +6,13 @@ function Table({ columns, children }) {
     <div className={styles.table}>
       <table>
         <thead>
-          {columns.map((column) => (
-            <th>{column}</th>
-          ))}
+          <tr>
+            {columns.map((column, index) => (
+              <th key={index}>{column}</th>
+            ))}
+          </tr>
         </thead>
-        {children}
+        <tbody>{children}</tbody>
       </table>
     </div>
   );

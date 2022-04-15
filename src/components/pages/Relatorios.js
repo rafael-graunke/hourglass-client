@@ -1,5 +1,6 @@
 import Button from '../Button';
 import Table from '../Table';
+import Input from '../Input';
 import styles from './Relatorios.module.css';
 
 function Relatorios() {
@@ -7,9 +8,9 @@ function Relatorios() {
     <div className={styles.container}>
       <div className={styles.inputs}>
         <h1>De</h1>
-        <input type="date" className={styles.date} />
+        <Input type="date" customClass={styles.date} />
         <h1>até</h1>
-        <input type="date" className={styles.date} />
+        <Input type="date" customClass={styles.date} />
         <Button texto="Gerar" />
       </div>
       <Table columns={['Período', 'Gerado em', 'Ações']}>
