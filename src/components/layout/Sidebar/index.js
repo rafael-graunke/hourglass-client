@@ -1,5 +1,5 @@
-import MenuItem from './MenuItem';
-import styles from './Sidebar.module.css';
+import MenuItem from '../MenuItem';
+import styles from './styles.module.css';
 
 function Sidebar() {
   return (

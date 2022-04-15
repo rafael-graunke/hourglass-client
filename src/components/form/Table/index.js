@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Table.module.css';
+import styles from './styles.module.css';
 
 function Table({ columns, children }) {
   return (

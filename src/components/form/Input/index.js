@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Input.module.css';
+import styles from './styles.module.css';
 
 function Input({ type, customClass, handleOnChange, placeholder }) {
   return (

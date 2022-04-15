@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
@@ -10,17 +11,19 @@ import Horas from './components/pages/Horas';
 import Emails from './components/pages/Emails';
 
 function App() {
+  const [entity, setEntity] = useState(1);
+
   return (
     <div className="App">
       <Router>
-        <Navbar />
+        <Navbar handleSelect={setEntity} />
         <ContentWrapper>
           <Sidebar />
           <Container>
             <Routes>
               <Route path="/relatorios" element={<Relatorios />} />
-              <Route path="/horas" element={<Horas />} />
-              <Route path="/emails" element={<Emails />} />
+              <Route path="/horas" element={<Horas entity={entity} />} />
+              <Route path="/emails" element={<Emails entity={entity} />} />
             </Routes>
           </Container>
         </ContentWrapper>

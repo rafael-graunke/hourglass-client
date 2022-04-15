@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { FaCircle } from 'react-icons/fa';
-import styles from './MenuItem.module.css';
+import styles from './styles.module.css';
 
 function MenuItem({ texto, to }) {
   return (

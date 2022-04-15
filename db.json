@@ -1,0 +1,53 @@
+{
+  "emails": [
+    {
+      "id": 1,
+      "entity": 1,
+      "email": "foo@bar.com"
+    },
+    {
+      "id": 2,
+      "entity": 1,
+      "email": "foo2@bar.com"
+    },
+    {
+      "id": 3,
+      "entity": 2,
+      "email": "foo3@bar.com"
+    },
+    {
+      "id": 4,
+      "entity": 3,
+      "email": "foo4@bar.com"
+    },
+    {
+      "entity": 1,
+      "email": "teste@bebber.com",
+      "id": 5
+    },
+    {
+      "entity": 1,
+      "email": "maisum@teste.com",
+      "id": 6
+    },
+    {
+      "entity": 2,
+      "email": "testeemoutroagora@teste.com",
+      "id": 7
+    }
+  ],
+  "hours": [
+    {
+      "id": 1,
+      "entity": 1,
+      "hoursContracted": 35,
+      "hoursUsed": 15
+    },
+    {
+      "id": 2,
+      "entity": 2,
+      "hoursContracted": 65,
+      "hoursUsed": 60
+    }
+  ]
+}

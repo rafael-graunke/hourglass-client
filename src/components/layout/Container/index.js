@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Container.module.css';
+import styles from './styles.module.css';
 
 function Container({ children }) {
   return <section className={styles.container}>{children}</section>;

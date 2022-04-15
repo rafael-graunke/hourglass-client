@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import styles from './Button.module.css';
+import styles from './styles.module.css';
 
 function Button({ texto, handleOnClick }) {
   return (
