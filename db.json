@@ -50,7 +50,7 @@
     {
       "id": 1,
       "entity": 1,
-      "hoursContracted": "40",
+      "hoursContracted": "27",
       "hoursUsed": 15
     },
     {
@@ -58,6 +58,15 @@
       "entity": 2,
       "hoursContracted": "70",
       "hoursUsed": 60
+    }
+  ],
+  "reports": [
+    {
+      "id": 1,
+      "entity": 1,
+      "dateGenerated": "2022-04-15",
+      "initialDate": "2022-04-1",
+      "finalDate": "2022-04-31"
     }
   ]
 }

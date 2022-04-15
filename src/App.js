@@ -21,7 +21,10 @@ function App() {
           <Sidebar />
           <Container>
             <Routes>
-              <Route path="/relatorios" element={<Relatorios />} />
+              <Route
+                path="/relatorios"
+                element={<Relatorios entity={entity} />}
+              />
               <Route path="/horas" element={<Horas entity={entity} />} />
               <Route path="/emails" element={<Emails entity={entity} />} />
             </Routes>
