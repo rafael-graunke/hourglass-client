@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { FaTrash } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
 import Button from '../../form/Button';
 import Table from '../../form/Table';
@@ -8,18 +9,26 @@ import Form from '../../form/Form';
 import styles from './styles.module.css';
 
 function Emails({ entity }) {
-  const [email, setEmail] = useState('');
+  const [endereco, setEndereco] = useState('');
   const [emails, setEmails] = useState([]);
 
   function getEmails(id) {
     axios
-      .get(`http://localhost:5000/emails?entity=${id}`)
+      .get(`http://localhost:3001/emails/${id}`)
       .then((response) => {
         setEmails(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  function removeEmail(id) {
+    return () => {
+      axios
+        .delete(`http://localhost:3001/emails/${id}`)
+        .then(() => getEmails(entity));
+    };
   }
 
   useEffect(() => {
@@ -29,9 +38,9 @@ function Emails({ entity }) {
   function handleOnSubmit(e) {
     e.preventDefault();
     axios
-      .post(`http://localhost:5000/emails`, {
-        entity,
-        email,
+      .post(`http://localhost:3001/emails/`, {
+        idEntidade: entity,
+        endereco,
       })
       .then(() => getEmails(entity));
   }
@@ -45,7 +54,7 @@ function Emails({ entity }) {
             type="email"
             customClass={styles.email}
             placeholder="email@dominio.com.br"
-            handleOnChange={(e) => setEmail(e.target.value)}
+            handleOnChange={(e) => setEndereco(e.target.value)}
           />
           <Button texto="Adicionar" />
         </div>
@@ -54,8 +63,13 @@ function Emails({ entity }) {
         {emails ? (
           emails.map((mail, index) => (
             <tr key={mail.id} className={index % 2 !== 0 ? styles.odd : ''}>
-              <td>{mail.email}</td>
-              <td>ID: {mail.id}</td>
+              <td>{mail.endereco}</td>
+              <td>
+                <FaTrash
+                  className={styles.clickable}
+                  onClick={removeEmail(mail.id)}
+                />
+              </td>
             </tr>
           ))
         ) : (

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import Loader from '../../layout/Loader';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
 import Form from '../../form/Form';
@@ -8,11 +9,31 @@ import styles from './styles.module.css';
 
 function Horas({ entity }) {
   const [contractedHours, setContractedHours] = useState('');
-  const [hoursInfo, setHoursInfo] = useState({});
+  const [infoIsLoading, setInfoIsLoading] = useState(true);
+  const [hora, setHora] = useState({
+    hoursContracted: 0,
+    hoursUsed: 0,
+  });
+
+  function toHHMMSS(segundos) {
+    let hours = Math.floor(segundos / 3600);
+    let minutes = Math.floor((segundos - hours * 3600) / 60);
+
+    if (hours < 10) {
+      hours = `0${hours}`;
+    }
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+
+    return { hours, minutes };
+  }
 
   function getHoursInfo(id) {
-    axios.get(`http://localhost:5000/hours?entity=${id}`).then((response) => {
-      setHoursInfo(response.data[0]);
+    setInfoIsLoading(true);
+    axios.get(`http://localhost:3001/horas/${id}`).then((response) => {
+      setHora(response.data);
+      setInfoIsLoading(false);
     });
   }
 
@@ -23,8 +44,8 @@ function Horas({ entity }) {
   function handleOnSubmit(e) {
     e.preventDefault();
     axios
-      .put(`http://localhost:5000/hours/${hoursInfo.id}`, {
-        ...hoursInfo,
+      .put(`http://localhost:5000/hours/${hora.id}`, {
+        ...hora,
         hoursContracted: contractedHours,
       })
       .then(() => getHoursInfo(entity));
@@ -37,24 +58,42 @@ function Horas({ entity }) {
           <h1>Contratadas</h1>
           <h1>Consumidas</h1>
           <h1>Percentual</h1>
-          {hoursInfo && (
-            <>
-              <div className={styles.item}>
-                <h1>{hoursInfo.hoursContracted}</h1>h
-              </div>
-              <div className={styles.item}>
-                <h1>{hoursInfo.hoursUsed}</h1>h
-              </div>
-              <div className={styles.item}>
+          <div className={styles.item}>
+            {infoIsLoading ? (
+              <Loader size={100} />
+            ) : (
+              <>
+                <h1>{toHHMMSS(hora.segundos).hours}</h1>h
+              </>
+            )}
+          </div>
+          <div className={styles.item}>
+            {infoIsLoading ? (
+              <Loader size={100} />
+            ) : (
+              <>
+                <h1>{hora.hoursUsed}</h1>h
+              </>
+            )}
+          </div>
+          <div className={styles.item}>
+            {infoIsLoading ? (
+              <Loader size={100} />
+            ) : (
+              <>
                 <h1>
-                  {Math.floor(
-                    (hoursInfo.hoursUsed / hoursInfo.hoursContracted) * 100
-                  )}
+                  {hora.hoursContracted > 0
+                    ? toHHMMSS(
+                        Math.floor(
+                          (hora.hoursUsed / hora.hoursContracted) * 100
+                        )
+                      ).hours
+                    : 0}
                 </h1>
                 %
-              </div>
-            </>
-          )}
+              </>
+            )}
+          </div>
         </div>
       </section>
       <section className={styles.container}>

@@ -50,13 +50,13 @@
     {
       "id": 1,
       "entity": 1,
-      "hoursContracted": "27",
+      "hoursContracted": "25",
       "hoursUsed": 15
     },
     {
       "id": 2,
       "entity": 2,
-      "hoursContracted": "70",
+      "hoursContracted": "80",
       "hoursUsed": 60
     }
   ],

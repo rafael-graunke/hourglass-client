@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
+import { FaDownload, FaTrash } from 'react-icons/fa';
+import { saveAs } from 'file-saver';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Loader from '../../layout/Loader';
 import Button from '../../form/Button';
 import Table from '../../form/Table';
 import Input from '../../form/Input';
@@ -8,20 +11,52 @@ import Form from '../../form/Form';
 import styles from './styles.module.css';
 
 function Relatorios({ entity }) {
-  const [initialDate, setInitialDate] = useState('');
-  const [finalDate, setFinalDate] = useState('');
-  const [reports, setReports] = useState([]);
+  const [dataInicial, setDataInicial] = useState('');
+  const [dataFinal, setDataFinal] = useState('');
+  const [relatorioIsLoading, setRelatorioIsLoading] = useState(true);
+  const [relatorios, setRelatorios] = useState([]);
+
+  function formataData(dt) {
+    const options = { timeZone: 'UTC' };
+    return new Date(dt).toLocaleDateString('pt-BR', options);
+  }
 
   function getReports(id) {
-    axios
-      .get(`http://localhost:5000/reports?entity=${id}`)
-      .then((response) => setReports(response.data));
+    setRelatorioIsLoading(true);
+    axios.get(`http://localhost:3001/relatorios/${id}`).then((response) => {
+      setRelatorios(response.data);
+      setRelatorioIsLoading(false);
+    });
   }
 
   useEffect(() => getReports(entity), [entity]);
 
   function handleOnSubmit(e) {
     e.preventDefault();
+    if (dataInicial && dataFinal) {
+      axios
+        .post(`http://localhost:3001/relatorios/`, {
+          dataInicial,
+          dataFinal,
+          idEntidade: entity,
+          dataGerado: new Date().toISOString(),
+        })
+        .then(() => getReports(entity));
+    }
+  }
+
+  function downloadImage(name) {
+    return () => {
+      saveAs(`http://localhost:3001/files/${name}.pdf`, 'relatorio.pdf');
+    };
+  }
+
+  function removeRelatorio(id) {
+    return () => {
+      axios
+        .delete(`http://localhost:3001/relatorios/${id}`)
+        .then(() => getReports(entity));
+    };
   }
 
   return (
@@ -32,27 +67,47 @@ function Relatorios({ entity }) {
           <Input
             type="date"
             customClass={styles.date}
-            handleOnChange={(e) => setInitialDate(e.target.value)}
+            handleOnChange={(e) => setDataInicial(e.target.value)}
           />
           <h1>até</h1>
           <Input
             type="date"
             customClass={styles.date}
-            handleOnChange={(e) => setFinalDate(e.target.value)}
+            handleOnChange={(e) => setDataFinal(e.target.value)}
           />
           <Button texto="Gerar" />
         </div>
       </Form>
-      <Table columns={['Período', 'Gerado em', 'Ações']}>
-        {reports.length > 0 &&
-          reports.map((report) => (
-            <tr>
-              <td>{`${report.initialDate} - ${report.finalDate}`}</td>
-              <td>{report.dateGenerated}</td>
-              <td>teste</td>
-            </tr>
-          ))}
-      </Table>
+      {relatorioIsLoading ? (
+        <div className={styles.flexCenter}>
+          <Loader />
+        </div>
+      ) : (
+        <Table columns={['Período', 'Gerado em', 'Ações']}>
+          {relatorios.length > 0 &&
+            relatorios.map((relatorio, index) => (
+              <tr
+                key={relatorio.id}
+                className={index % 2 !== 0 ? styles.odd : ''}
+              >
+                <td>{`${formataData(relatorio.dataInicial)} - ${formataData(
+                  relatorio.dataFinal
+                )}`}</td>
+                <td>{formataData(relatorio.dataGerado)}</td>
+                <td>
+                  <FaDownload
+                    className={styles.clickable}
+                    onClick={downloadImage(relatorio.nomeArquivo)}
+                  />
+                  <FaTrash
+                    className={styles.clickable}
+                    onClick={removeRelatorio(relatorio.id)}
+                  />
+                </td>
+              </tr>
+            ))}
+        </Table>
+      )}
     </div>
   );
 }
