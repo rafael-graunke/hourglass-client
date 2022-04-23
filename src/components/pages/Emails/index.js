@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { FaTrash } from 'react-icons/fa';
 import { useState, useEffect } from 'react';
+import Loader from '../../layout/Loader';
 import Button from '../../form/Button';
 import Table from '../../form/Table';
 import Input from '../../form/Input';
@@ -11,12 +12,15 @@ import styles from './styles.module.css';
 function Emails({ entity }) {
   const [endereco, setEndereco] = useState('');
   const [emails, setEmails] = useState([]);
+  const [emailIsLoading, setEmailIsLoading] = useState(true);
 
   function getEmails(id) {
+    setEmailIsLoading(true);
     axios
-      .get(`http://localhost:3001/emails/${id}`)
+      .get(`/api/emails/${id}`)
       .then((response) => {
         setEmails(response.data);
+        setEmailIsLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -25,9 +29,7 @@ function Emails({ entity }) {
 
   function removeEmail(id) {
     return () => {
-      axios
-        .delete(`http://localhost:3001/emails/${id}`)
-        .then(() => getEmails(entity));
+      axios.delete(`/api/emails/${id}`).then(() => getEmails(entity));
     };
   }
 
@@ -38,7 +40,7 @@ function Emails({ entity }) {
   function handleOnSubmit(e) {
     e.preventDefault();
     axios
-      .post(`http://localhost:3001/emails/`, {
+      .post(`/api/emails/`, {
         idEntidade: entity,
         endereco,
       })
@@ -59,25 +61,35 @@ function Emails({ entity }) {
           <Button texto="Adicionar" />
         </div>
       </Form>
-      <Table columns={['E-mails', 'Ações']}>
-        {emails ? (
-          emails.map((mail, index) => (
-            <tr key={mail.id} className={index % 2 !== 0 ? styles.odd : ''}>
-              <td>{mail.endereco}</td>
-              <td>
-                <FaTrash
-                  className={styles.clickable}
-                  onClick={removeEmail(mail.id)}
-                />
-              </td>
+      {emailIsLoading && (
+        <div className={styles.flexCenter}>
+          <Loader />
+        </div>
+      )}
+      {!emailIsLoading && emails.length === 0 && (
+        <strong>Nenhum e-mail cadastrado.</strong>
+      )}
+      {!emailIsLoading && emails.length > 0 && (
+        <Table columns={['E-mails', 'Ações']}>
+          {emails ? (
+            emails.map((mail, index) => (
+              <tr key={mail.id} className={index % 2 !== 0 ? styles.odd : ''}>
+                <td>{mail.endereco}</td>
+                <td>
+                  <FaTrash
+                    className={styles.clickable}
+                    onClick={removeEmail(mail.id)}
+                  />
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={2}>Buscando E-mails</td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan={2}>Buscando E-mails</td>
-          </tr>
-        )}
-      </Table>
+          )}
+        </Table>
+      )}
     </div>
   );
 }

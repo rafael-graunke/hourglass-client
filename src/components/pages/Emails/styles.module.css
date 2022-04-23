@@ -12,6 +12,12 @@
   margin-bottom: 20px;
 }
 
+.flexCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .email {
   min-width: 400px;
   height: 35px;
