@@ -23,7 +23,7 @@ function Relatorios({ entity }) {
 
   function getReports(id) {
     setRelatorioIsLoading(true);
-    axios.get(`http://localhost:3001/relatorios/${id}`).then((response) => {
+    axios.get(`/api/relatorios/${id}`).then((response) => {
       setRelatorios(response.data);
       setRelatorioIsLoading(false);
     });
@@ -35,7 +35,7 @@ function Relatorios({ entity }) {
     e.preventDefault();
     if (dataInicial && dataFinal) {
       axios
-        .post(`http://localhost:3001/relatorios/`, {
+        .post(`http://localhost:3001/api/relatorios`, {
           dataInicial,
           dataFinal,
           idEntidade: entity,
@@ -47,15 +47,13 @@ function Relatorios({ entity }) {
 
   function downloadImage(name) {
     return () => {
-      saveAs(`http://localhost:3001/files/${name}.pdf`, 'relatorio.pdf');
+      saveAs(`http://localhost:3001/api/files/${name}`, 'relatorio.pdf');
     };
   }
 
   function removeRelatorio(id) {
     return () => {
-      axios
-        .delete(`http://localhost:3001/relatorios/${id}`)
-        .then(() => getReports(entity));
+      axios.delete(`/api/relatorios/${id}`).then(() => getReports(entity));
     };
   }
 
@@ -78,34 +76,37 @@ function Relatorios({ entity }) {
           <Button texto="Gerar" />
         </div>
       </Form>
-      {relatorioIsLoading ? (
+      {relatorioIsLoading && (
         <div className={styles.flexCenter}>
           <Loader />
         </div>
-      ) : (
+      )}
+      {!relatorioIsLoading && relatorios.length === 0 && (
+        <strong>Nenhum relatório encontrado.</strong>
+      )}
+      {!relatorioIsLoading && relatorios.length > 0 && (
         <Table columns={['Período', 'Gerado em', 'Ações']}>
-          {relatorios.length > 0 &&
-            relatorios.map((relatorio, index) => (
-              <tr
-                key={relatorio.id}
-                className={index % 2 !== 0 ? styles.odd : ''}
-              >
-                <td>{`${formataData(relatorio.dataInicial)} - ${formataData(
-                  relatorio.dataFinal
-                )}`}</td>
-                <td>{formataData(relatorio.dataGerado)}</td>
-                <td>
-                  <FaDownload
-                    className={styles.clickable}
-                    onClick={downloadImage(relatorio.nomeArquivo)}
-                  />
-                  <FaTrash
-                    className={styles.clickable}
-                    onClick={removeRelatorio(relatorio.id)}
-                  />
-                </td>
-              </tr>
-            ))}
+          {relatorios.map((relatorio, index) => (
+            <tr
+              key={relatorio.id}
+              className={index % 2 !== 0 ? styles.odd : ''}
+            >
+              <td>{`${formataData(relatorio.dataInicial)} - ${formataData(
+                relatorio.dataFinal
+              )}`}</td>
+              <td>{formataData(relatorio.dataGerado)}</td>
+              <td>
+                <FaDownload
+                  className={styles.clickable}
+                  onClick={downloadImage(relatorio.nomeArquivo)}
+                />
+                <FaTrash
+                  className={styles.clickable}
+                  onClick={removeRelatorio(relatorio.id)}
+                />
+              </td>
+            </tr>
+          ))}
         </Table>
       )}
     </div>
