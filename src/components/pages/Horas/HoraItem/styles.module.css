@@ -1,0 +1,29 @@
+.item {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-size: 45px;
+}
+
+.item h1 {
+  font-size: 90px;
+  position: relative;
+}
+
+.item h1 i,
+.minutos {
+  font-style: normal;
+  font-weight: normal;
+}
+
+.item h1 i {
+  font-size: 45px;
+}
+
+.minutos {
+  font-size: 40px;
+  position: absolute;
+  top: 10px;
+  margin-left: calc(100% - 27px);
+  color: #aeaeae;
+}

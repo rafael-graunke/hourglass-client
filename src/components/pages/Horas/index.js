@@ -6,49 +6,42 @@ import Button from '../../form/Button';
 import Input from '../../form/Input';
 import Form from '../../form/Form';
 import styles from './styles.module.css';
+import HoraItem from './HoraItem';
+import PercentualItem from './PercentualItem';
 
 function Horas({ entity }) {
-  const [contractedHours, setContractedHours] = useState('');
+  const [horas, setHoras] = useState('');
   const [infoIsLoading, setInfoIsLoading] = useState(true);
-  const [hora, setHora] = useState({
-    hoursContracted: 0,
-    hoursUsed: 0,
-  });
+  const [contrato, setContrato] = useState({});
 
-  function toHHMMSS(segundos) {
-    let hours = Math.floor(segundos / 3600);
-    let minutes = Math.floor((segundos - hours * 3600) / 60);
-
-    if (hours < 10) {
-      hours = `0${hours}`;
-    }
-    if (minutes < 10) {
-      minutes = `0${minutes}`;
-    }
-
-    return { hours, minutes };
-  }
-
-  function getHoursInfo(id) {
+  function buscaContrato(id) {
     setInfoIsLoading(true);
-    axios.get(`http://localhost:3001/horas/${id}`).then((response) => {
-      setHora(response.data);
+    axios.get(`/api/horas/${id}`).then((response) => {
+      setContrato(response.data);
       setInfoIsLoading(false);
     });
   }
 
   useEffect(() => {
-    getHoursInfo(entity);
+    buscaContrato(entity);
   }, [entity]);
 
   function handleOnSubmit(e) {
     e.preventDefault();
-    axios
-      .put(`http://localhost:5000/hours/${hora.id}`, {
-        ...hora,
-        hoursContracted: contractedHours,
-      })
-      .then(() => getHoursInfo(entity));
+    if (!contrato.existe) {
+      axios
+        .post(`/api/horas`, {
+          idEntidade: entity,
+          segundosDisponiveis: horas * 3600,
+        })
+        .then(() => buscaContrato(entity));
+    } else {
+      axios
+        .put(`/api/horas/${contrato.id}`, {
+          segundosDisponiveis: horas * 3600,
+        })
+        .then(() => buscaContrato(entity));
+    }
   }
 
   return (
@@ -58,42 +51,29 @@ function Horas({ entity }) {
           <h1>Contratadas</h1>
           <h1>Consumidas</h1>
           <h1>Percentual</h1>
-          <div className={styles.item}>
-            {infoIsLoading ? (
-              <Loader size={100} />
-            ) : (
-              <>
-                <h1>{toHHMMSS(hora.segundos).hours}</h1>h
-              </>
-            )}
-          </div>
-          <div className={styles.item}>
-            {infoIsLoading ? (
-              <Loader size={100} />
-            ) : (
-              <>
-                <h1>{hora.hoursUsed}</h1>h
-              </>
-            )}
-          </div>
-          <div className={styles.item}>
-            {infoIsLoading ? (
-              <Loader size={100} />
-            ) : (
-              <>
-                <h1>
-                  {hora.hoursContracted > 0
-                    ? toHHMMSS(
-                        Math.floor(
-                          (hora.hoursUsed / hora.hoursContracted) * 100
-                        )
-                      ).hours
-                    : 0}
-                </h1>
-                %
-              </>
-            )}
-          </div>
+
+          {infoIsLoading ? (
+            <>
+              <div className={styles.item}>
+                <Loader size={100} />
+              </div>
+              <div className={styles.item}>
+                <Loader size={100} />
+              </div>
+              <div className={styles.item}>
+                <Loader size={100} />
+              </div>
+            </>
+          ) : (
+            <>
+              <HoraItem tempo={contrato.segundosDisponiveis} />
+              <HoraItem tempo={contrato.segundosGastos} />
+              <PercentualItem valor={contrato.percentual} />
+              <div className={styles.item}>
+                <h1>{}</h1>
+              </div>
+            </>
+          )}
         </div>
       </section>
       <section className={styles.container}>
@@ -102,7 +82,7 @@ function Horas({ entity }) {
             <h1>Horas Contratadas:</h1>
             <Input
               type="number"
-              handleOnChange={(e) => setContractedHours(e.target.value)}
+              handleOnChange={(e) => setHoras(e.target.value)}
               customClass={styles.input}
             />
             <Button texto="Alterar" />
