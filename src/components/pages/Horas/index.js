@@ -37,11 +37,12 @@ function Horas({ entity }) {
         .then(() => buscaContrato(entity));
     } else {
       axios
-        .put(`/api/horas/${contrato.id}`, {
+        .put(`/api/horas/${entity}`, {
           segundosDisponiveis: horas * 3600,
         })
         .then(() => buscaContrato(entity));
     }
+    setHoras('');
   }
 
   return (
@@ -84,6 +85,7 @@ function Horas({ entity }) {
               type="number"
               handleOnChange={(e) => setHoras(e.target.value)}
               customClass={styles.input}
+              value={horas}
             />
             <Button texto="Alterar" />
           </div>
