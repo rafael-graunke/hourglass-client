@@ -44,7 +44,10 @@ function Emails({ entity }) {
         idEntidade: entity,
         endereco,
       })
-      .then(() => getEmails(entity));
+      .then(() => {
+        getEmails(entity);
+        setEndereco('');
+      });
   }
 
   return (
@@ -57,6 +60,7 @@ function Emails({ entity }) {
             customClass={styles.email}
             placeholder="email@dominio.com.br"
             handleOnChange={(e) => setEndereco(e.target.value)}
+            value={endereco}
           />
           <Button texto="Adicionar" />
         </div>
