@@ -9,7 +9,10 @@ function Navbar({ handleSelect }) {
   const [entidades, setEntidades] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/entidades').then((response) => setEntidades(response.data));
+    axios.get('/api/entidades').then((response) => {
+      response.data.shift();
+      setEntidades(response.data);
+    });
   }, []);
 
   return (
