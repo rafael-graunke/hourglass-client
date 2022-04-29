@@ -8,6 +8,7 @@ import Table from '../../form/Table';
 import Input from '../../form/Input';
 import Form from '../../form/Form';
 import styles from './styles.module.css';
+import { getApiRoute } from '../../../util/util';
 
 function Emails({ entity }) {
   const [endereco, setEndereco] = useState('');
@@ -17,7 +18,7 @@ function Emails({ entity }) {
   function getEmails(id) {
     setEmailIsLoading(true);
     axios
-      .get(`/api/emails/${id}`)
+      .get(`${getApiRoute()}/api/emails/${id}`)
       .then((response) => {
         setEmails(response.data);
         setEmailIsLoading(false);
@@ -29,7 +30,9 @@ function Emails({ entity }) {
 
   function removeEmail(id) {
     return () => {
-      axios.delete(`/api/emails/${id}`).then(() => getEmails(entity));
+      axios
+        .delete(`${getApiRoute()}/api/emails/${id}`)
+        .then(() => getEmails(entity));
     };
   }
 
@@ -40,7 +43,7 @@ function Emails({ entity }) {
   function handleOnSubmit(e) {
     e.preventDefault();
     axios
-      .post(`/api/emails/`, {
+      .post(`${getApiRoute()}/api/emails/`, {
         idEntidade: entity,
         endereco,
       })

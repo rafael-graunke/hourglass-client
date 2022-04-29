@@ -9,6 +9,7 @@ import Table from '../../form/Table';
 import Input from '../../form/Input';
 import Form from '../../form/Form';
 import styles from './styles.module.css';
+import { getApiRoute } from '../../../util/util';
 
 function Relatorios({ entity }) {
   const [dataInicial, setDataInicial] = useState('');
@@ -23,7 +24,7 @@ function Relatorios({ entity }) {
 
   function getReports(id) {
     setRelatorioIsLoading(true);
-    axios.get(`/api/relatorios/${id}`).then((response) => {
+    axios.get(`${getApiRoute()}/api/relatorios/${id}`).then((response) => {
       setRelatorios(response.data);
       setRelatorioIsLoading(false);
     });
@@ -35,7 +36,7 @@ function Relatorios({ entity }) {
     e.preventDefault();
     if (dataInicial && dataFinal) {
       axios
-        .post(`http://localhost:3001/api/relatorios`, {
+        .post(`${getApiRoute()}/api/relatorios`, {
           dataInicial,
           dataFinal,
           idEntidade: entity,
@@ -47,13 +48,15 @@ function Relatorios({ entity }) {
 
   function downloadImage(name) {
     return () => {
-      saveAs(`http://localhost:3001/api/files/${name}`, 'relatorio.pdf');
+      saveAs(`${getApiRoute()}/api/files/${name}`, 'relatorio.pdf');
     };
   }
 
   function removeRelatorio(id) {
     return () => {
-      axios.delete(`/api/relatorios/${id}`).then(() => getReports(entity));
+      axios
+        .delete(`${getApiRoute()}/api/relatorios/${id}`)
+        .then(() => getReports(entity));
     };
   }
 

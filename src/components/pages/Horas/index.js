@@ -8,6 +8,7 @@ import Form from '../../form/Form';
 import styles from './styles.module.css';
 import HoraItem from './HoraItem';
 import PercentualItem from './PercentualItem';
+import { getApiRoute } from '../../../util/util';
 
 function Horas({ entity }) {
   const [horas, setHoras] = useState('');
@@ -16,7 +17,7 @@ function Horas({ entity }) {
 
   function buscaContrato(id) {
     setInfoIsLoading(true);
-    axios.get(`/api/horas/${id}`).then((response) => {
+    axios.get(`${getApiRoute()}/api/horas/${id}`).then((response) => {
       setContrato(response.data);
       setInfoIsLoading(false);
     });
@@ -30,14 +31,14 @@ function Horas({ entity }) {
     e.preventDefault();
     if (!contrato.existe) {
       axios
-        .post(`/api/horas`, {
+        .post(`${getApiRoute()}/api/horas`, {
           idEntidade: entity,
           segundosDisponiveis: horas * 3600,
         })
         .then(() => buscaContrato(entity));
     } else {
       axios
-        .put(`/api/horas/${entity}`, {
+        .put(`${getApiRoute()}/api/horas/${entity}`, {
           segundosDisponiveis: horas * 3600,
         })
         .then(() => buscaContrato(entity));

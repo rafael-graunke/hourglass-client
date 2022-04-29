@@ -4,12 +4,13 @@ import PropTypes from 'prop-types';
 import { FaCog } from 'react-icons/fa';
 import Select from '../../form/Select';
 import styles from './styles.module.css';
+import { getApiRoute } from '../../../util/util';
 
 function Navbar({ handleSelect }) {
   const [entidades, setEntidades] = useState([]);
 
   useEffect(() => {
-    axios.get('/api/entidades').then((response) => {
+    axios.get(`${getApiRoute()}/api/entidades`).then((response) => {
       response.data.shift();
       setEntidades(response.data);
     });
