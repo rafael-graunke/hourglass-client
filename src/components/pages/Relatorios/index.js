@@ -33,6 +33,7 @@ function Relatorios({ entity }) {
   useEffect(() => getReports(entity), [entity]);
 
   function handleOnSubmit(e) {
+    setRelatorioIsLoading(true);
     e.preventDefault();
     if (dataInicial && dataFinal) {
       axios
