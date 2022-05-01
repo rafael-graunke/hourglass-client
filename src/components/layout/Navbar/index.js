@@ -11,8 +11,8 @@ function Navbar({ handleSelect }) {
 
   useEffect(() => {
     axios.get(`${getApiRoute()}/api/entidades`).then((response) => {
-      response.data.shift();
-      setEntidades(response.data);
+      const ent = response.data.filter((entidade) => entidade.id !== 0);
+      setEntidades(ent);
     });
   }, []);
 
